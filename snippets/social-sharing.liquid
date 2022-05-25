@@ -1,0 +1,35 @@
+{{ 'component-social-sharing.css' | asset_url | stylesheet_tag }}
+
+{% liquid
+  if template == 'product'
+    assign share_title = product.title
+    assign share_permalink = product.url
+    assign share_image = product.featured_image
+  elsif template == 'article'
+    assign share_title = article.title
+    assign share_permalink = article.url
+    assign share_image = article.image
+  endif
+%}
+
+<div class="social-sharing">
+  {% if settings.share_facebook %}
+    <a class="facebook" target="_blank" href="//www.facebook.com/sharer.php?u={{ shop.url | append: share_permalink }}">
+      {% render 'icon-facebook' %}
+    </a>
+  {% endif %}
+
+  {% if settings.share_twitter %}
+    <a class="twitter" target="_blank"
+       href="//twitter.com/share?text={{ share_title | url_param_escape }}&amp;url={{ shop.url | append: share_permalink }}">
+      {% render 'icon-twitter' %}
+    </a>
+  {% endif %}
+
+  {% if settings.share_pinterest %}
+    <a class="pinterest" target="_blank"
+       href="//pinterest.com/pin/create/button/?url={{ shop.url | append: share_permalink }}&amp;media={{ share_image | img_url: '1024x1024' }}&amp;description={{ share_title | url_param_escape }}">
+      {% render 'icon-pinterest' %}
+    </a>
+  {% endif %}
+</div>

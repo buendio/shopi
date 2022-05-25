@@ -1,0 +1,8 @@
+<img srcset="{{ image | img_url: size }} 1x, {{ image | img_url: size, scale: 2 }} 2x"
+     src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+     alt="{{ image.alt | escape }}"
+     loading="lazy"
+     width="{{ width | default: image.width }}"
+     height="{{ height | default: image.height }}"
+     class="{{ class }}"
+>

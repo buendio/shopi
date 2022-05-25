@@ -1,0 +1,12 @@
+{{ 'section-main-page.css' | asset_url | stylesheet_tag }}
+
+<div class="page-width">
+  {{ page.content }}
+</div>
+
+{% schema %}
+{
+"name": "Page",
+"tag": "section"
+}
+{% endschema %}

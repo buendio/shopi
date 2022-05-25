@@ -1,0 +1,20 @@
+{{ 'section-main-collections.css' | asset_url | stylesheet_tag }}
+
+<div class="page-width">
+  <ul>
+    <ul class="grid grid--1-col grid--3-col-tablet grid--one-third-max grid--4-col-desktop grid--quarter-max">
+      {% for collection in collections %}
+        <li class="grid__item">
+          <a href="/collections/{{ collection.handle }}">{{ collection.title }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </ul>
+</div>
+
+{% schema %}
+{
+"name": "List collections",
+"tag": "section"
+}
+{% endschema %}

@@ -1,0 +1,65 @@
+{{ 'section-contact-form.css' | asset_url | stylesheet_tag }}
+
+<div class="page-width">
+  <div class="contact-page">
+    {% form 'contact' %}
+      {% if form.posted_successfully? %}
+        <div class="alert alert-success">
+          <p>{{ 'contact.form.post_success' | t }}</p>
+        </div>
+      {% endif %}
+
+      {% if form.errors %}
+        <div class="alert alert-warning">
+          <p>{{ 'contact.form.error_message' | t }}</p>
+          {% for field in form.errors %}
+            <p>{{ field | capitalize | replace: 'Body', 'Message' }} — {{ form.errors.messages[field] }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% if customer %}
+        <input type="hidden" name="contact[name]" value="{{ customer.first_name }} {{ customer.last_name }}">
+        <input type="hidden" name="contact[email]" value="{{ customer.email }}">
+      {% else %}
+        <div class="contact-field-wrap">
+          <div class="form-group">
+            <label for="contactFormName">{{ 'contact.form.name' | t }}:</label>
+            <input type="text" class="form-control" id="contactFormName" name="contact[name]" placeholder="" />
+          </div>
+          <div class="form-group">
+            <label for="contactFormEmail">{{ 'contact.form.email' | t }}:</label>
+            <input type="email" class="form-control" id="contactFormEmail" name="contact[email]" placeholder="" />
+          </div>
+          <div class="form-group">
+            <label for="contactFormTelephone">{{ 'contact.form.phone' | t }}:</label>
+            <input type="tel" class="form-control" id="contactFormTelephone" name="contact[phone]" placeholder="" />
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="form-group">
+        <label for="contactFormMessage">{{ 'contact.form.message' | t }}:</label>
+        <textarea class="form-control" rows="5" cols="75" id="contactFormMessage" name="contact[body]"
+                  placeholder=""></textarea>
+      </div>
+
+      <div class="form-group">
+        <input type="submit" value="{{ 'contact.form.send' | t }}" class="button" />
+        <input type="reset" value="{{ 'contact.form.clear' | t }}" class="button">
+      </div>
+    {% endform %}
+  </div>
+</div>
+
+{% schema %}
+{
+"name": "Contact form",
+"tag": "section",
+"presets": [
+{
+"name": "Contact form"
+}
+]
+}
+{% endschema %}

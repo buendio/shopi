@@ -1,0 +1,18 @@
+{{ 'section-main-blog.css' | asset_url | stylesheet_tag }}
+
+<div class="page-width">
+  <ul>
+    {% for article in blog.articles %}
+      <li>
+        <a href="{{ article.url }}">{{ article.title }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+
+{% schema %}
+{
+"name": "Blog",
+"tag": "section"
+}
+{% endschema %}

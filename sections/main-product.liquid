@@ -1,0 +1,119 @@
+{{ 'section-main-product.css' | asset_url | stylesheet_tag }}
+
+<script src="{{ 'product.js' | asset_url }}" defer></script>
+
+{% assign current_variant = product.selected_or_first_available_variant %}
+
+<main-product data-product>
+  <div class="page-width">
+    <h1 class="product__title">
+      {{ product.title }}
+    </h1>
+
+    <div class="product__price">
+      {{ product.price | money }}
+    </div>
+
+    {% for option in product.options %}
+      {% render 'swatch', swatch: option %}
+    {% endfor %}
+
+    {% form 'product', product, data-product-main-from: '' %}
+      <input type="hidden" name="form_type" value="product">
+      <input type="hidden" name="utf8" value="✓">
+
+      <select id="product-select" name="id" value="{{ current_variant.id }}" style="display: none">
+        {% for variant in product.variants %}
+          <option value="{{ variant.id }}"
+                  {% if current_variant.id == variant.id %}selected{% endif %}>{{ variant.title | escape }}
+            - {{ variant.price | money }}</option>
+        {% endfor %}
+      </select>
+
+      <quantity-input class="product-quantity quantity">
+        <input class="quantity__input"
+               type="number"
+               name="quantity"
+               value="1"
+               min="1"
+        >
+        <button class="quantity__button no-js-hidden" name="minus" type="button">
+          {% render 'icon-minus' %}
+        </button>
+        <button class="quantity__button no-js-hidden" name="plus" type="button">
+          {% render 'icon-plus' %}
+        </button>
+      </quantity-input>
+
+      <button class="button product__atc" type="submit">
+        <span>{{ "products.product.add_to_cart" | t }}</span>
+      </button>
+
+      {{ form | payment_button }}
+    {% endform %}
+  </div>
+
+  {% render 'product-json' %}
+</main-product>
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org/",
+    "@type": "Product",
+    "name": "{{ product.title | escape }}",
+    "url": "{{ shop.url }}{{ product.url }}",
+    {% if product.featured_image %}
+{% assign image_size = product.featured_image.width | append: 'x' %}
+        "image": [
+          "https:{{ product.featured_image.src | img_url: image_size }}"
+        ],
+    {% endif %}
+    "description": "{{ product.description | strip_html | escape }}",
+    "sku": "{{ product.selected_or_first_available_variant.sku }}",
+    "GTIN": "{{ product.selected_or_first_available_variant.barcode }}",
+    "brand": {
+        "@type": "Thing",
+        "name": "{{ product.vendor | escape }}"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "",
+      "reviewCount": ""
+    },
+    "offers": [
+      {
+        "@type" : "Offer",
+        "seller" : "{{ shop.domain }}",
+        "availability" : "http://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}",
+        "name" : "{{ current_variant.title | escape }}",
+        "price" : "{{ current_variant.price | divided_by: 100.00 }}",
+        "priceCurrency" : "{{ shop.currency }}",
+        "url" : "{{ shop.url }}{{ variant.url }}",
+        {% if current_variant.sku != blank %}"sku": "{{ current_variant.sku }}",{% endif %}
+        {% if current_variant.image %}
+{% assign variant_image_size = current_variant.image.width | append: 'x' %}
+          "image": "http:{{ current_variant.image.src | img_url: variant_image_size }}",
+        {% endif %}
+        {% if current_variant.weight != blank %}
+          "weight": {
+            "@type": "QuantitativeValue",
+            {% if current_variant.weight_unit != blank %}
+              "unitCode": "{{ current_variant.weight_unit }}",
+            {% endif %}
+            "value": "{{ current_variant.weight | weight_with_unit: current_variant.weight_unit }}"
+          },
+        {% endif %}
+        "priceValidUntil": "{{ 'now' | date: '%s' | date: '%Y-%m-%d' }}"
+      }
+    ]
+}
+
+</script>
+
+
+{% schema %}
+{
+"name": "Product",
+"tag": "section"
+}
+{% endschema %}

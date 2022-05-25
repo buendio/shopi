@@ -1,0 +1,14 @@
+{{ 'section-main-article.css' | asset_url | stylesheet_tag }}
+
+<article>
+  <div class="page-width">
+    {{ article.content }}
+  </div>
+</article>
+
+{% schema %}
+{
+"name": "Article",
+"tag": "section"
+}
+{% endschema %}

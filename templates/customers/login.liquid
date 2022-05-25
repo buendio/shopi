@@ -1,0 +1,110 @@
+{{ 'customer.css' | asset_url | stylesheet_tag }}
+
+<script src="{{ 'customer.js' | asset_url }}" defer></script>
+
+<div class="account__login" data-login-page>
+  <div class="page-width">
+
+    {%- if recover_success == true -%}
+      <h3 class="form__message" tabindex="-1" autofocus>
+        <svg aria-hidden="true" focusable="false" role="presentation" viewBox="0 0 13 13">
+          <path d="M6.5 12.35C9.73087 12.35 12.35 9.73086 12.35 6.5C12.35 3.26913 9.73087 0.65 6.5 0.65C3.26913 0.65 0.65 3.26913 0.65 6.5C0.65 9.73086 3.26913 12.35 6.5 12.35Z" fill="#428445" stroke="white" stroke-width="0.7"/>
+          <path d="M5.53271 8.66357L9.25213 4.68197" stroke="white"/>
+          <path d="M4.10645 6.7688L6.13766 8.62553" stroke="white">
+        </svg>
+        {{ 'customer.recover_password.success' | t }}
+      </h3>
+    {%- endif -%}
+
+    <div data-login-form>
+      {% form 'customer_login', data-form: 'login', class: 'form' %}
+        <h1>{{ 'customer.login.title' | t }}</h1>
+
+        {{ form.errors | default_errors }}
+        <div class="form-group">
+          <input type="email"
+                 name="customer[email]"
+                 id="CustomerEmail"
+                 class="input {% if form.errors contains 'email' %}input-error{% endif %}"
+                 placeholder="{{ 'customer.login.email' | t }}"
+                 spellcheck="false"
+                 autocomplete="off"
+                 autocapitalize="off"
+                 autofocus>
+          <label for="CustomerEmail" class="input-label">
+            {{ 'customer.login.email' | t }}
+          </label>
+        </div>
+
+        {% if form.password_needed %}
+          <div class="form-group form-group--has-text">
+            <input type="password"
+                   name="customer[password]"
+                   id="CustomerPassword"
+                   class="input {% if form.errors contains 'password' %}input-error{% endif %}"
+                   placeholder="{{ 'customer.login.password' | t }}">
+            <label for="CustomerPassword" class="input-label">
+              {{ 'customer.login.password' | t }}
+            </label>
+
+            <a class="password-recover" href="#recover" data-recover-show>{{ 'customer.login.forgot_password' | t }}</a>
+          </div>
+        {% endif %}
+
+        <div class="button-wrapper">
+          <input type="submit" class="button" value="{{ 'customer.login.sign_in' | t }}">
+
+          <div class="register-text">
+            {{ 'customer.login.register' | t }}
+            <a href="/account/register">
+              {{ 'layout.customer.register' | t }}
+            </a>
+          </div>
+        </div>
+      {% endform %}
+    </div>
+
+    <div class="hide" data-recover-form>
+      <h2>{{ 'customer.recover_password.title' | t }}</h2>
+      <p>{{ 'customer.recover_password.subtext' | t }}</p>
+
+      {% form 'recover_customer_password', data-form: 'reset', class: 'form' %}
+        {% assign recover_success = form.posted_successfully? %}
+
+        {{ form.errors | default_errors }}
+
+        <div class="form-group">
+          <input type="email"
+                 name="email"
+                 id="RecoverEmail"
+                 class="input"
+                 placeholder="{{ 'customer.recover_password.email' | t }}"
+                 spellcheck="false"
+                 autocomplete="off"
+                 autocapitalize="off">
+          <label for="RecoverEmail" class="input-label">
+            {{ 'customer.recover_password.email' | t }}
+          </label>
+        </div>
+
+        <div class="button-wrapper">
+
+          <input type="submit" class="button" value="{{ 'customer.recover_password.submit' | t }}">
+
+          <a href="#" data-recover-hide>
+            {{ 'customer.recover_password.cancel' | t }}
+          </a>
+        </div>
+      {% endform %}
+
+    </div>
+
+    {% if shop.checkout.guest_login %}
+      <h2>{{ 'customer.login.guest_title' | t }}</h2>
+
+      {% form 'guest_login' %}
+        <input type="submit" class="button" value="{{ 'customer.login.guest_continue' | t }}">
+      {% endform %}
+    {% endif %}
+  </div>
+</div>

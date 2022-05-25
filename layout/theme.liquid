@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  {% liquid
+    render 'head.meta'
+    render 'head.global-variable'
+    render 'head.scripts'
+    render 'head.styles'
+  %}
+
+  {% if template contains 'checkout' %}
+    {{ content_for_header }}
+  {% else %}
+    <script src="{{ 'optimization.js' | asset_url }}" defer></script>
+    {% capture content_for_header2 %}{{ content_for_header }}{% endcapture %}
+    {{ content_for_header2 | replace: ' defer="defer" ', ' type="no-load" ' | replace: " src=", " data-src=" | replace: "window.addEventListener('load', asyncLoad, false);", "window.addEventListener('custom_load', asyncLoad, false);" | replace: "DOMContentLoaded", "" }}
+  {% endif %}
+</head>
+
+<body style="opacity: 0;">
+{% section 'header' %}
+
+<main>
+  <div class="page-width">
+    {% render 'breadcrumbs' %}
+  </div>
+
+  {{ content_for_layout }}
+</main>
+
+{% liquid
+  section 'footer'
+  render 'footer.scripts'
+%}
+</body>
+</html>

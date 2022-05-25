@@ -1,0 +1,30 @@
+<script>
+  window.Shopify = Object.assign(
+    {},
+    window.Shopify,
+    {
+      template: '{{ template }}',
+      routes: {
+        cart_add_url: '{{ routes.cart_add_url }}',
+        cart_change_url: '{{ routes.cart_change_url }}',
+        cart_update_url: '{{ routes.cart_update_url }}',
+        cart_clear_url: '{{ routes.cart_clear_url }}',
+      },
+      cartStrings: {
+        error: `{{ 'cart.general.cart_error' | t }}`,
+        quantityError: `{{ 'cart.general.cart_quantity_error_html' | t }}`,
+      },
+      variantStrings: {
+        addToCart: `{{ 'products.product.add_to_cart' | t }}`,
+        soldOut: `{{ 'products.product.sold_out' | t }}`,
+        available: `{{ 'products.product.available' | t }}`,
+        unavailable: `{{ 'products.product.unavailable' | t }}`,
+      },
+      links: {
+        asset: '{{ 'XXX.XXX' | asset_url }}',
+        file: '{{ 'XXX.XXX' | file_url }}',
+      },
+      moneyFormat: '{{ shop.money_format }}',
+    },
+  );
+</script>

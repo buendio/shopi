@@ -1,0 +1,140 @@
+<link rel="stylesheet" href="{{ 'component-menu-drawer.css' | asset_url }}" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="{{ 'component-header-search-results.css' | asset_url }}" media="print" onload="this.media='all'">
+
+<sticky-header class="header-wrapper">
+    <header id="header" class="header" data-id="{{ section.id }}">
+        <div class="page-width">
+            <div class="header-inner">
+                <a href="{{ routes.root_url }}" class="header__logo">
+                    {%- if section.settings.logo != blank -%}
+                        <div class="header__logo-img">
+                            {% render 'image', image: section.settings.logo, size: '340x' %}
+                        </div>
+                    {%- else -%}
+                        {{ shop.name }}
+                    {%- endif -%}
+                </a>
+
+                <predictive-search class="header__search">
+                    <form action='{{ routes.search_url }}' method='get' role='search' class="header__search-form">
+                        <input
+                            type="search"
+                            name="q"
+                            id="Search"
+                            value="{{ search.terms | escape }}"
+                            placeholder="{{ 'general.search.placeholder' | t }}"
+                            class="header__search-input"
+                        >
+                        <input type="hidden" name="options[prefix]" value="last">
+
+                        <button type="submit" class="header__search-btn">
+                            {% render 'icon-search' %}
+                        </button>
+                    </form>
+
+                    <div class="header__search-results hidden"></div>
+                </predictive-search>
+
+                <div class="header__icons">
+                    {% if shop.customer_accounts_enabled %}
+                        <span class="header__account header__icon">
+                        {% if template.name == 'account' or template.name == 'order' or template.name == 'addresses' %}
+                            <a href="{{ routes.account_logout_url }}" class="link--text">
+                                Log out
+                            </a>
+                        {% else %}
+                            <a href="{{ routes.account_url }}" class="link--text">
+                                Account
+                            </a>
+                        {% endif %}
+                    </span>
+                    {% endif %}
+
+                    <a href="/cart" class="header__cart header__icon">
+                      {% render 'icon-bag' %}
+                      <span class="header__cart-count">{% if cart.item_count > 0 %}{{- cart.item_count -}}{% endif %}</span>
+                    </a>
+
+                    {%- if linklists[section.settings.menu] != blank -%}
+                        <header-drawer>
+                            <details class="menu-drawer-container">
+                                <summary class="header__icon header__icon--menu link link--text">
+                                <span>
+                                  {% render 'icon-hamburger' %}
+                                    {% render 'icon-close' %}
+                                </span>
+                                </summary>
+
+                                <div id="menu-drawer-overlay" class="menu-drawer-overlay"></div>
+
+                                <div id="menu-drawer" class="menu-drawer" tabindex="-1">
+                                    <nav class="menu-drawer__navigation">
+                                        <ul class="menu-drawer__menu">
+                                            {%- for link in linklists[section.settings.menu].links -%}
+                                                <li>
+                                                    {%- if link.links != blank -%}
+                                                        <details>
+                                                            <summary class="menu-drawer__menu-item link link--text{% if link.child_active %} menu-drawer__menu-item--active{% endif %}">
+                                                                {{ link.title | escape }}
+                                                                {% render 'icon-caret' %}
+                                                            </summary>
+                                                            <div class="menu-drawer__submenu" tabindex="-1">
+                                                                <ul class="menu-drawer__menu list-unstyled" tabindex="-1">
+                                                                    {%- for childlink in link.links -%}
+                                                                        <li>
+                                                                            <a href="{{ childlink.url }}" class="menu-drawer__menu-item link link--text{% if childlink.current %} menu-drawer__menu-item--active{% endif %}"{% if childlink.current %} aria-current="page"{% endif %}>
+                                                                                {{ childlink.title | escape }}
+                                                                            </a>
+                                                                        </li>
+                                                                    {%- endfor -%}
+                                                                </ul>
+                                                            </div>
+                                                        </details>
+                                                    {%- else -%}
+                                                        <a href="{{ link.url }}" class="menu-drawer__menu-item link link--text{% if link.current %} menu-drawer__menu-item--active{% endif %}"{% if link.current %} aria-current="page"{% endif %}>
+                                                            {{ link.title | escape }}
+                                                        </a>
+                                                    {%- endif -%}
+                                                </li>
+                                            {%- endfor -%}
+                                            <li>
+                                                {% if template.name == 'account' or template.name == 'order' or template.name == 'addresses' %}
+                                                    <a href="{{ routes.account_logout_url }}" class="menu-drawer__menu-item link link--text">
+                                                        Log out
+                                                    </a>
+                                                {% else %}
+                                                    <a href="{{ routes.account_url }}" class="menu-drawer__menu-item link link--text">
+                                                        My Orders
+                                                    </a>
+                                                {% endif %}
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </details>
+                        </header-drawer>
+                    {%- endif -%}
+                </div>
+            </div>
+        </div>
+    </header>
+</sticky-header>
+
+{% schema %}
+    {
+        "name": "Header",
+        "settings": [
+            {
+                "type": "image_picker",
+                "id": "logo",
+                "label": "Logo image"
+            },
+            {
+                "type": "link_list",
+                "id": "menu",
+                "default": "main-menu",
+                "label": "Menu"
+            }
+        ]
+    }
+{% endschema %}

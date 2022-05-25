@@ -1,0 +1,26 @@
+<link rel="stylesheet" href="{{ 'section-footer.css' | asset_url }}" media="print" onload="this.media='all'">
+
+<footer class="footer">
+    <div class="page-width">
+        <div class="footer__inner">
+            {% unless shop.enabled_payment_types == empty %}
+                <ul class="payment-icons">
+                    {% for type in shop.enabled_payment_types %}
+                        <li>
+                            {{ type | payment_type_svg_tag: class: 'icon' }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endunless %}
+
+            <p class="footer__cpr">&copy; {{ 'now' | date: '%Y' }}, {{ shop.name | link_to: '/' }}</p>
+        </div>
+    </div>
+</footer>
+
+{% schema %}
+    {
+        "name": "Footer",
+        "tag": "section"
+    }
+{% endschema %}

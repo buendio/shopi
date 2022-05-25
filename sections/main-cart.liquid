@@ -1,0 +1,18 @@
+{{ 'section-main-cart.css' | asset_url | stylesheet_tag }}
+
+<div class="page-width">
+  <ul>
+    {% for item in cart.items %}
+      <li>
+        <div>{{ item.title }} - {{ item.final_price | money }}</div>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+
+{% schema %}
+{
+"name": "Cart",
+"tag": "section"
+}
+{% endschema %}

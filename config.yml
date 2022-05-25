@@ -1,0 +1,6 @@
+development:
+  password: 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
+  theme_id: "121156763780"
+  store: ezseven-v2.myshopify.com
+  ignore_files:
+    - config/settings_data.json

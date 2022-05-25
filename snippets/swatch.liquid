@@ -1,0 +1,57 @@
+{% if swatch != blank %}
+  {% liquid
+    assign found_option = false
+    assign option_index = 0
+
+    for option in product.options_with_values
+      if option.name == swatch
+        assign found_option = true
+        assign option_index = forloop.index0
+        assign option_position = 'option' | append: option.position
+        assign selected_value = option.selected_value
+      endif
+    endfor
+  %}
+
+  {% if found_option %}
+    <custom-swatch>
+      <div class="swatch" data-option-index="{{ option_index }}">
+        <div>{{ swatch }}:</div>
+
+        {% assign values = '' %}
+
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            {% for variant in product.variants %}
+              {% assign value = variant.options[option_index] %}
+              {% unless values contains value %}
+                {% liquid
+                  assign values = values | join: ','
+                  assign values = values | append: ',' | append: value
+                  assign values = values | split: ','
+                %}
+
+                <div class="swiper-slide">
+                  <div
+                    class="swatch-element {{ value | handle }} {% if variant.available %}available{% else %}soldout{% endif %}">
+                    <input
+                      id="swatch-{{ option_index }}-{{ value | handle }}-{{ product.id }}"
+                      type="radio"
+                      name="option-{{ option_index }}-{{ product.id }}"
+                      data-index="{{ option_position }}"
+                      value="{{ value | escape }}"
+                      {% if selected_value == value %} checked{% endif %}
+                    />
+                    <label for="swatch-{{ option_index }}-{{ value | handle }}-{{ product.id }}">
+                      {{ value }}
+                    </label>
+                  </div>
+                </div>
+              {% endunless %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </custom-swatch>
+  {% endif %}
+{% endif %}
